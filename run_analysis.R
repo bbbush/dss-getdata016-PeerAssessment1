@@ -78,11 +78,17 @@ total.dataset<-(function(){
   names(ds)<-names(train.dataset)
   ds<-rbind(ds, train.dataset)
   levels(ds$activity)<-activity.labels
+  write.table(ds, "total_dataset.txt", row.name=FALSE)
   ds
 })()
 
-# write to disk
-write.table(total.dataset, "total_dataset.txt", row.name=FALSE)
-
-# each row will also have 128 variables for inertial signals
-
+# remove unwanted columns to get the clean results
+clean.dataset<-(function(){
+  # these columns are desired clean data (mean and std)
+  col.ids<-grep("mean\\(|std\\(", feature.labels)
+  # write to disk
+  ds<-total.dataset[,c(col.ids, ncol(total.dataset), ncol(total.dataset)-1)]
+  levels(ds$activity)<-activity.labels
+  write.table(ds, "clean_dataset.txt", row.name=FALSE)
+  ds
+})()
