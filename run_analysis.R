@@ -92,3 +92,21 @@ clean.dataset<-(function(){
   write.table(ds, "clean_dataset.txt", row.name=FALSE)
   ds
 })()
+
+# calculate mean
+# after peer evaluation
+# other submissions simply used either of this. amazing!
+# ds2<-aggregate(data=clean.dataset, .~subjects+activity, mean)
+# ds3<-ddply(clean.dataset, .(subjects, activity), function(x) colMeans(x[, 1:66]))
+mean.dataset<-(function(){
+  dl<-lapply(clean.dataset[,1:66], function(x){
+    ds<-aggregate(x, by=list(clean.dataset[,"subjects"], clean.dataset[,"activity"]),mean)
+    names(ds)<-c("subjects", "activity", "X")
+    ds
+    })
+  ds<-join_all(dl, by=c("subjects", "activity"))
+  names(ds)<-c("subjects", "activity", names(clean.dataset[,1:66]))
+  levels(ds$activity)<-activity.labels
+  write.table(ds, "mean_dataset.txt", row.name=FALSE)
+  ds
+})()
